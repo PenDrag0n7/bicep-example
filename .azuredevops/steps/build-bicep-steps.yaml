@@ -1,0 +1,36 @@
+parameters:
+- name: zoneCategory
+  type: string
+- name: zoneName
+  type: string
+- name: FunctionName
+  type: string
+- name: OutputPath
+  default: build
+  type: string
+
+steps:
+- checkout: self
+  displayName: 'Checkout: Repo'
+
+- script: mkdir -p $(System.DefaultWorkingDirectory)/build/parameters
+  displayName: 'Build: Create artifact directory'
+
+- task: PowerShell@2
+  displayName: 'Build: ARM templates & parameter files'
+  inputs:
+    pwsh: true
+    targetType: inline
+    script: |
+      az bicep install
+      if ($LASTEXITCODE -ne 0) { throw 'Bicep installation failed.' }
+      . ./scripts/Manage-Eslz.ps1
+      Build-Bicep `
+      -ZoneCategory ${{ parameters.zoneCategory }} `
+      -ZoneName ${{ parameters.zoneName }} `
+      -FunctionName ${{ parameters.FunctionName }} `
+      -OutputPath ${{ parameters.OutputPath }}
+
+- publish: '$(System.DefaultWorkingDirectory)/build'
+  displayName: 'Build: Publish templates'
+  artifact: ${{ parameters.FunctionName }}

@@ -1,0 +1,22 @@
+# ARM conversion ignores
+main.json
+*australia*.json
+*global.json
+/build
+/reports
+
+# Local Azure configuration and credentials
+.azure/
+.env
+.env.*
+!.env.example
+*.local.bicepparam
+*.local.yaml
+*.local.json
+
+# Editor and Python cache files
+.vscode/
+.idea/
+__pycache__/
+
+json.sh

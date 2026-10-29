@@ -1,0 +1,15 @@
+{
+  "analyzers": {
+    "core": {
+      "rules": {
+        "no-deployments-resources": {
+          "level": "off"
+        },
+        "use-recent-api-versions": {
+          "level": "warning",
+          "maxAllowedAgeInDays": 365
+        }
+      }
+    }
+  }
+}

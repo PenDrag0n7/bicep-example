@@ -1,0 +1,6 @@
+---
+name: security
+tags:
+  CriticalService: true
+  CostCentre: Security
+  InfrastructureTeam: SOC

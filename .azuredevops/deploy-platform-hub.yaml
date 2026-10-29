@@ -1,0 +1,83 @@
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+#######################
+# Zone Pipeline
+#######################
+
+# Pipeline triggers
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
+      - bug/*
+  paths:
+    include:
+      - stacks/platform/hub
+      - .azuredevops/deploy-platform-hub.yaml
+      - .azuredevops/stages/**
+      - .azuredevops/steps/**
+      - scripts/**
+      - modules/**
+      - stacks/common.yaml
+      - bicepconfig.json
+      - .azuredevops/stages/**
+      - .azuredevops/steps/**
+      - scripts/**
+      - modules/**
+      - stacks/common.yaml
+      - bicepconfig.json
+
+# Zone static configuration
+variables:
+  zoneCategory: platform
+  zoneName: hub
+  deploymentScope: sub
+  location: australiaeast
+
+# Zone runtime configuration
+parameters:
+
+# Zone functions
+- name: functions
+  displayName: 'Zone functions to deploy:'
+  type: object
+  default:
+  - name: bootstrap
+    dependsOn: ''
+  - name: networking
+    dependsOn: 'bootstrap'
+  - name: private_dns
+    dependsOn: 'networking'
+  - name: firewalls
+    dependsOn: 'private_dns'
+
+# Zone environments
+- name: environments
+  displayName: 'Environments to deploy into:'
+  type: object
+  default:
+  - name: nonprod
+    serviceConnection: example-NonProd-Sub-Hub
+    devopsEnvironment: zone-hub-all
+  - name: production
+    serviceConnection: example-Prod-Sub-Hub
+    devopsEnvironment: zone-hub-all
+
+# Optional flags
+- name: forceCreate
+  displayName: 'Force create stage(s)?'
+  type: boolean
+  default: false
+
+# Pipeline stage template
+extends:
+  template: stages/deploy-zone-stages.yaml
+  parameters:
+    zoneCategory: ${{ variables.zoneCategory }}
+    zoneName: ${{ variables.zoneName }}
+    deploymentScope: ${{ variables.DeploymentScope }}
+    location: ${{ variables.location }}
+    environments: ${{ parameters.environments }}
+    functions: ${{ parameters.functions }}
+    forceCreate: ${{ parameters.forceCreate }}

@@ -1,0 +1,6 @@
+---
+name: core
+tags:
+  CriticalService: true
+  CostCentre: TBD
+  InfrastructureTeam: SOC

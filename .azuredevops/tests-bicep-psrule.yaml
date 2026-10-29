@@ -1,0 +1,27 @@
+trigger: none
+
+stages:
+
+- stage: analyze
+  displayName: 'PSRule: Analyse & Publish'
+  jobs:
+
+  - job: analyze_repo
+    displayName: 'PSRule: Analyse Bicep'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+
+    - task: ps-rule-assert@2
+      displayName: 'PSRule: Run Analysis'
+      inputs:
+        inputType: inputPath
+        inputPath: './stacks/'
+        modules: PSRule.Rules.Azure
+        outputFormat: Sarif
+        outputPath: reports/ps-rule-results.sarif
+
+    - publish: $(System.DefaultWorkingDirectory)/reports/ps-rule-results.sarif
+      artifact: CodeAnalysisLogs
+      displayName: 'PSRule: Publish results to DevOps'
+      condition: succeededOrFailed()

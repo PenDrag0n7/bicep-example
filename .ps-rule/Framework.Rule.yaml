@@ -1,0 +1,17 @@
+---
+# Synopsis: Azure resource must have an valid Environment tag set.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: Example.Eslz.Azure.Tags (Example-000001)
+spec:
+  with:
+    - PSRule.Rules.Azure\Azure.Resource.SupportsTags
+  condition:
+    allOf:
+      - in:
+          - 'production'
+          - 'nonprod'
+          - 'tenant'
+          - 'platform'
+        field: 'tags.Environment'

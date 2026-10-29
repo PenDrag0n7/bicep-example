@@ -1,0 +1,78 @@
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+#######################
+# Zone Pipeline
+#######################
+
+# Pipeline triggers
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
+      - bug/*
+  paths:
+    include:
+      - stacks/platform/tenant
+      - .azuredevops/deploy-platform-tenant.yaml
+      - .azuredevops/stages/**
+      - .azuredevops/steps/**
+      - scripts/**
+      - modules/**
+      - stacks/common.yaml
+      - bicepconfig.json
+      - .azuredevops/stages/**
+      - .azuredevops/steps/**
+      - scripts/**
+      - modules/**
+      - stacks/common.yaml
+      - bicepconfig.json
+
+# Zone static configuration
+variables:
+  zoneCategory: platform
+  zoneName: tenant
+  deploymentScope: mg                       # Valid az cli options: tenant, mg, sub, group
+  location: global
+  rootManagementGroupId: 00000000-0000-0000-0000-000000000024
+
+# Zone runtime configuration
+parameters:
+
+# Zone functions
+- name: functions
+  displayName: 'Zone functions to deploy:'
+  type: object
+  default:
+  - name: hierarchy
+    dependsOn: ''
+  - name: compliance
+    dependsOn: ''
+
+# Zone environments
+- name: environments
+  displayName: 'Environments to deploy into:'
+  type: object
+  default:
+  - name: tenant
+    serviceConnection: example-Prod-Root-MG
+    devopsEnvironment: zone-tenant-all
+
+# Optional flags
+- name: forceCreate
+  displayName: 'Force create stage(s)?'
+  type: boolean
+  default: false
+
+# Pipeline stage template
+extends:
+  template: stages/deploy-zone-stages.yaml
+  parameters:
+    zoneCategory: ${{ variables.zoneCategory }}
+    zoneName: ${{ variables.zoneName }}
+    deploymentScope: ${{ variables.DeploymentScope }}
+    location: ${{ variables.location }}
+    environments: ${{ parameters.environments }}
+    functions: ${{ parameters.functions }}
+    rootManagementGroupId: ${{ variables.rootManagementGroupId }}
+    forceCreate: ${{ parameters.forceCreate }}

@@ -1,0 +1,65 @@
+parameters:
+- name: zoneCategory
+  type: string
+- name: zoneName
+  type: string
+- name: FunctionName
+  type: string
+- name: Location
+  type: string
+- name: Environment
+  type: string
+- name: DeploymentScope
+  type: string
+- name: RootManagementGroupId
+  type: string
+- name: ResourceGroup
+  type: string
+- name: WhatIf
+  type: boolean
+- name: serviceConnection
+  type: string
+
+steps:
+  - checkout: self
+    displayName: 'Checkout: Current repo'
+
+  - download: current
+    displayName: 'Download: Artifacts for ${{ parameters.FunctionName }}'
+    artifact: ${{ parameters.FunctionName }}
+
+  - task: AzureCLI@2
+    ${{ if eq( parameters.WhatIf, True ) }}:
+      displayName: 'What-If: ${{ parameters.FunctionName }} deployment'
+    ${{ if eq( parameters.WhatIf, False ) }}:
+      displayName: 'Create: ${{ parameters.FunctionName }} deployment'
+    name: deploy
+    inputs:
+      azureSubscription: ${{ parameters.serviceConnection }}
+      scriptType: pscore
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        # Workaround to suppress secrets warning:
+        az config set clients.show_secrets_warning=False
+
+        # Source the management script
+        . ./scripts/Manage-Eslz.ps1
+        # Execute the Deploy-Zone function
+        $result = (Deploy-Zone `
+          -ZoneCategory ${{ parameters.zoneCategory }} `
+          -ZoneName ${{ parameters.zoneName }} `
+          -FunctionName ${{ parameters.FunctionName }} `
+          -Location ${{ parameters.Location }} `
+          -Environment ${{ parameters.Environment }} `
+          -DeploymentScope ${{ parameters.DeploymentScope }} `
+          -RootManagementGroupId ${{ parameters.RootManagementGroupId }} `
+          -ResourceGroup ${{ parameters.ResourceGroup }} `
+          -DeployPath $env:PIPELINE_WORKSPACE/${{ parameters.FunctionName }} `
+          -WhatIf $$(whatIfBool))
+        $result
+        if ($$(whatIfBool) -eq $true) {
+            if (Select-String -pattern '(to create)|(to modify)|(to delete)' -InputObject $result -Quiet) {
+              Write-Host "> What-If: Changes detected! Setting whatIfHasChanges to 'true'..."
+              echo "##vso[task.setvariable variable=whatIfHasChanges;isOutput=true]true"
+            }
+        }

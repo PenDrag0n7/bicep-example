@@ -1,0 +1,15 @@
+---
+tenant: ex
+allowedLocations:
+  - australiaeast
+  - australiasoutheast
+  - australiacentral
+  - australiacentral2
+tags:
+  SourceRepository: example/bicep-framework
+  IaCLanguage: Bicep
+hubVnetResourceIds:
+  nonprod: '/subscriptions/00000000-0000-0000-0000-000000000013/resourceGroups/ex-hub-nprd-auea-networking-rg/providers/Microsoft.Network/virtualNetworks/ex-hub-nprd-auea-networking-vnet'
+  prod: '/subscriptions/00000000-0000-0000-0000-000000000029/resourceGroups/ex-hub-prod-auea-networking-rg/providers/Microsoft.Network/virtualNetworks/ex-hub-prod-auea-networking-vnet'
+diagnosticSettings:
+  workspaceResourceId: '/subscriptions/00000000-0000-0000-0000-000000000016/resourceGroups/ex-security-prod-auea-sentinel-rg/providers/Microsoft.OperationalInsights/workspaces/ex-sec-prod-auea-sentinel-law'

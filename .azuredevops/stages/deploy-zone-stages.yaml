@@ -1,0 +1,153 @@
+parameters:
+# Zone Configuration
+- name: zoneCategory
+  type: string
+- name: zoneName
+  type: string
+- name: functions
+  type: object
+
+# Environment Configuration
+- name: location
+  type: string
+- name: environments
+  type: object
+
+# Deployment Configuration
+- name: rootManagementGroupId
+  type: string
+  default: 'dummy-mg'
+- name: resourceGroup
+  type: string
+  default: 'dummy-rg'
+- name: deploymentScope
+  type: string
+
+# Optional toggles
+- name: forceCreate
+  type: boolean
+  default: False
+
+# Agent Pool & Service Connection
+- name: agentPool
+  type: object
+  default:
+    vmImage: ubuntu-latest
+
+stages:
+
+########################
+# Tests
+########################
+
+- ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+  - stage: tests
+    dependsOn: []
+    condition: always()
+    displayName: 'Tests: ${{ parameters.zoneCategory }}/${{ parameters.zoneName }}'
+    jobs:
+    - job: psrule_static_analysis
+      displayName: 'Static Analysis: PSRule'
+      pool: ${{ parameters.agentPool }}
+      steps:
+      - template: ../steps/tests-bicep-psrule.yaml
+        parameters:
+          zoneCategory: ${{ parameters.zoneCategory }}
+          zoneName: ${{ parameters.zoneName }}
+
+########################
+# Build
+########################
+
+- stage: bicep_build
+  condition: succeeded()
+  displayName: 'Build: ${{ parameters.zoneCategory }}/${{ parameters.zoneName }}'
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+    dependsOn: []
+  ${{ else }}:
+    dependsOn: tests
+  jobs:
+  - ${{ each function in parameters.functions }}:
+    - job: ${{ function.name }}_build
+      displayName: 'Build: ${{ function.name }}'
+      pool: ${{ parameters.agentPool }}
+      steps:
+        - template: ../steps/build-bicep-steps.yaml
+          parameters:
+            zoneCategory: ${{ parameters.zoneCategory }}
+            zoneName: ${{ parameters.zoneName }}
+            FunctionName: ${{ function.name }}
+
+########################
+# Deployment - What-If
+########################
+
+- ${{ each environment in parameters.environments }}:
+  - stage: ${{ environment.name }}_whatif
+    displayName: '${{ environment.name }}: What-If - All'
+    condition: always()
+    dependsOn:
+    - bicep_build
+    jobs:
+    - ${{ each function in parameters.functions }}:
+      - job: ${{ function.name }}_whatif
+        condition: in(stageDependencies.bicep_build.${{ function.name }}_build.result, 'Succeeded')
+        displayName: 'What-If: ${{ function.name }}/${{ parameters.location }}/${{ environment.name }}'
+        timeoutInMinutes: 10
+        pool: ${{ parameters.agentPool }}
+        variables:
+        - name: whatIfBool
+          value: true
+        steps:
+        - template: ../steps/deploy-zone-steps.yaml
+          parameters:
+            serviceConnection: ${{ environment.serviceConnection }}
+            zoneCategory: ${{ parameters.zoneCategory }}
+            zoneName: ${{ parameters.zoneName }}
+            FunctionName: ${{ function.name }}
+            Location: ${{ parameters.location }}
+            Environment: ${{ environment.name }}
+            DeploymentScope: ${{ parameters.DeploymentScope }}
+            ResourceGroup: ${{ parameters.ResourceGroup }}
+            RootManagementGroupId: ${{ parameters.RootManagementGroupId }}
+            WhatIf: 'true'
+
+########################
+# Deployment - Create
+########################
+
+  - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(parameters.forceCreate, True)) }}:
+    - ${{ each function in parameters.functions }}:
+      - stage: ${{ environment.name }}_${{ function.name }}_create
+        condition: or(
+            eq(dependencies.${{ environment.name }}_whatif.outputs['${{ function.name }}_whatif.deploy.whatIfHasChanges'], 'true'),
+            eq(${{ parameters.forceCreate }}, True)
+          )
+        displayName: '${{ environment.name }}: Create - ${{ function.name }}'
+        dependsOn:
+        - ${{ environment.name }}_whatif
+        jobs:
+        - deployment: ${{ function.name }}
+          condition: in(stageDependencies.${{ environment.name }}_whatif.${{ function.name }}_whatif.result, 'Succeeded')
+          displayName:  'Create: ${{ function.name }}/${{ parameters.location }}/${{ environment.name }}'
+          pool: ${{ parameters.agentPool }}
+          variables:
+          - name: whatIfBool
+            value: false
+          environment: ${{ environment.devopsEnvironment }}
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                - template: ../steps/deploy-zone-steps.yaml
+                  parameters:
+                    serviceConnection: ${{ environment.serviceConnection }}
+                    zoneCategory: ${{ parameters.zoneCategory }}
+                    zoneName: ${{ parameters.zoneName }}
+                    FunctionName: ${{ function.name }}
+                    Location: ${{ parameters.location }}
+                    Environment: ${{ environment.name }}
+                    DeploymentScope: ${{ parameters.DeploymentScope }}
+                    ResourceGroup: ${{ parameters.ResourceGroup }}
+                    RootManagementGroupId: ${{ parameters.RootManagementGroupId }}
+                    WhatIf: 'false'

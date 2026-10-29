@@ -1,0 +1,6 @@
+---
+name: hub
+tags:
+  CriticalService: true
+  CostCentre: TBD
+  InfrastructureTeam: SOC

@@ -1,0 +1,6 @@
+---
+name: identity
+tags:
+  CriticalService: true
+  CostCentre: Security
+  InfrastructureTeam: SOC

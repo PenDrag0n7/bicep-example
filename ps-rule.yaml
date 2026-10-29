@@ -1,0 +1,37 @@
+include:
+  module:
+  - 'PSRule.Rules.Azure'
+
+# Require a minimum version of modules that include referenced baseline.
+requires:
+  PSRule: '@pre >=2.9.0'
+  PSRule.Rules.Azure: '@pre >=1.32.1'
+
+configuration:
+  AZURE_BICEP_FILE_EXPANSION: false
+  AZURE_PARAMETER_FILE_EXPANSION: true
+  AZURE_BICEP_PARAMS_FILE_EXPANSION: true
+  AZURE_BICEP_FILE_EXPANSION_TIMEOUT: 10
+  AZURE_RESOURCE_ALLOWED_LOCATIONS:
+  - australiaeast
+  - australiasoutheast
+  AZURE_RESOURCE_GROUP:
+    location: australiaeast
+
+execution:
+  notProcessedWarning: false
+
+rule:
+  exclude:
+  # Ignore the following rules for all resources
+  - Azure.VM.UseHybridUseBenefit
+  - Azure.VM.Standalone
+
+input:
+  pathIgnore:
+  - '*.yaml'
+  - 'bicepconfig.json'
+
+output:
+  culture:
+    - "en-AU;en-US"

@@ -1,0 +1,20 @@
+parameters:
+- name: zoneCategory
+  type: string
+- name: zoneName
+  type: string
+
+steps:
+- task: ps-rule-assert@2
+  displayName: 'PSRule: Run Analysis'
+  inputs:
+    inputType: inputPath
+    inputPath: './stacks/${{ parameters.zoneCategory }}/${{ parameters.zoneName }}'
+    modules: PSRule.Rules.Azure
+    outputFormat: Sarif
+    outputPath: reports/ps-rule-results.sarif
+
+- publish: $(System.DefaultWorkingDirectory)/reports/ps-rule-results.sarif
+  artifact: CodeAnalysisLogs
+  displayName: 'PSRule: Publish results to DevOps'
+  condition: succeededOrFailed()

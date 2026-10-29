@@ -1,0 +1,74 @@
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+#######################
+# Zone Pipeline
+#######################
+
+# Pipeline triggers
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
+      - bug/*
+  paths:
+    include:
+      - stacks/platform/security
+      - .azuredevops/deploy-platform-security.yaml
+      - .azuredevops/stages/**
+      - .azuredevops/steps/**
+      - scripts/**
+      - modules/**
+      - stacks/common.yaml
+      - bicepconfig.json
+
+# Zone static configuration
+variables:
+  zoneCategory: platform
+  zoneName: security
+  deploymentScope: sub
+  location: australiaeast
+
+# Zone runtime configuration
+parameters:
+
+# Zone functions
+- name: functions
+  displayName: 'Zone functions to deploy:'
+  type: object
+  default:
+  - name: sentinel
+    dependsOn: ''
+  - name: networking
+    dependsOn: ''
+  - name: pki
+    dependsOn: 'networking'
+  - name: syslog
+    dependsOn: 'networking'
+
+# Zone environments
+- name: environments
+  displayName: 'Environments to deploy into:'
+  type: object
+  default:
+  - name: production
+    serviceConnection: example-Prod-Sub-Security
+    devopsEnvironment: zone-security-all
+
+# Optional flags
+- name: forceCreate
+  displayName: 'Force create stage(s)?'
+  type: boolean
+  default: false
+
+# Pipeline stage template
+extends:
+  template: stages/deploy-zone-stages.yaml
+  parameters:
+    zoneCategory: ${{ variables.zoneCategory }}
+    zoneName: ${{ variables.zoneName }}
+    deploymentScope: ${{ variables.DeploymentScope }}
+    location: ${{ variables.location }}
+    environments: ${{ parameters.environments }}
+    functions: ${{ parameters.functions }}
+    forceCreate: ${{ parameters.forceCreate }}
