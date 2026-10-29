@@ -351,7 +351,7 @@ module aksExternalDNS 'br/public:avm/res/managed-identity/user-assigned-identity
 //=============================
 
 @description('RBAC for External DNS')
-module externalDnsRBAC '../../../resources/authorization/role-assignments/main.bicep' = if (privateDnsZoneExisting != null) {
+module externalDnsRBAC '../../res/authorization-role-assignment-rg/main.bicep' = if (privateDnsZoneExisting != null) {
   name: '${deployment().name}-rbac-dnsZoneContributor'
   scope: resourceGroup(
     privateDnsZoneExisting.?privateDnsSubscriptionId ?? subscription().subscriptionId,

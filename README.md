@@ -8,8 +8,9 @@ A starting point for Azure infrastructure conventions, reusable modules, and dep
 .azuredevops/                # Example pipelines, stages, and steps
 .ps-rule/                   # Custom infrastructure rules
 modules/
-  resources/                # Reusable resource modules and naming conventions
-  patterns/                 # Compositions of resource modules
+  res/                      # Resource modules, e.g. network-virtual-network
+  ptn/                      # Patterns, e.g. compute-image and network-vnet
+  utl/                      # Utilities, e.g. naming
 scripts/                    # Local and pipeline build/deployment helpers
 stacks/
   common.yaml               # Shared example settings
@@ -28,9 +29,10 @@ Each stack follows `stacks/<category>/<name>/<function>/main.bicep`, with enviro
 ## Conventions
 
 - Keep organization-wide example settings in `stacks/common.yaml` and stack tags in `zone.yaml`.
-- Keep reusable resource logic in `modules/resources` and compositions in `modules/patterns`.
+- Keep reusable resource logic in `modules/res`, compositions in `modules/ptn`, and non-deploying helpers in `modules/utl`.
+- Use lowercase, hyphenated module names that combine domain and purpose, such as `ptn/compute-image`. Each module owns its `main.bicep`, tests, and child modules. See the [module catalog](modules/README.md) for the layout and naming rules.
 - Reference repository modules with relative paths. Third-party Azure Verified Modules use pinned `br/public:avm/res/...:<version>` references; no private registry is required.
-- Use the shared conventions module for naming and tags. The sample tenant prefix is `ex`, environments are `production`, `nonprod`, and `tenant`, and the sample regions are Australian Azure regions.
+- Use `modules/utl/naming/main.bicep` for naming and tags. The sample tenant prefix is `ex`, environments are `production`, `nonprod`, and `tenant`, and the sample regions are Australian Azure regions.
 - Supply secrets through secure parameters or a secret store. Keep generated ARM templates, local settings, and credentials out of Git.
 
 ## Customize the examples
@@ -41,7 +43,7 @@ Review network ranges, regions, tags, policy initiatives, and module/service ver
 
 ## Incomplete examples
 
-The imported source includes two unfinished patterns. `modules/patterns/devops/agents/main.bicep` is a resource-group/RBAC stub, and `modules/patterns/tenant/subscription-hierarchy/main.bicep` currently creates a test management group instead of processing the supplied hierarchy. Their stack wrappers and tests expect interfaces these stubs do not implement, so the agent and hierarchy examples do not compile. Complete these patterns before enabling the `ado-agents` or `hierarchy` pipeline functions. The other examples compile with the pinned public dependencies; existing linter warnings still need review before production use.
+The imported source includes two unfinished patterns. `modules/ptn/devops-agent/main.bicep` is a resource-group/RBAC stub, and `modules/ptn/tenant-hierarchy/main.bicep` currently creates a test management group instead of processing the supplied hierarchy. Their stack wrappers and tests expect interfaces these stubs do not implement, so the agent and hierarchy examples do not compile. Complete these patterns before enabling the `ado-agents` or `hierarchy` pipeline functions. The other examples compile with the pinned public dependencies; existing linter warnings still need review before production use.
 
 ## Build and validate
 

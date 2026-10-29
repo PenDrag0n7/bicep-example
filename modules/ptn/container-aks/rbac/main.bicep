@@ -57,7 +57,7 @@ module privateDnsRBAC './private-dns/main.bicep' = if(!empty(aksPrivateDnsResour
 // =========================
 // VNET RBAC
 // =========================
-module vnetRbac '../../../../resources/authorization/role-assignments/main.bicep' = {
+module vnetRbac '../../../res/authorization-role-assignment-rg/main.bicep' = {
   name: '${deployment().name}-rbac-vnet'
   scope: resourceGroup(vnetResourceGroup)
   params: {

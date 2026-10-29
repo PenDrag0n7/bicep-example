@@ -67,7 +67,7 @@ module mgTesting 'br/public:avm/res/management/management-group:0.1.1' = {
 // Subscription Assignments
 // =========================
 
-// module subscriptionAssignment '../../../resources/management/subscription-assignments/main.bicep' = [for (managementGroup, i) in subscriptionHierarchy: {
+// module subscriptionAssignment '../../res/management-subscription-assignment/main.bicep' = [for (managementGroup, i) in subscriptionHierarchy: {
 //   name: '${deployment().name}-${managementGroup.id}-subs'
 //   params: {
 //     managementGroupId: '${tenant}-${managementGroup.id}'

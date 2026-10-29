@@ -75,7 +75,7 @@ resource dnsResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Resource Group RBAC
 // =========================
 
-module rgRoleAssignments '../../../resources/authorization/role-assignments/main.bicep' = [
+module rgRoleAssignments '../../res/authorization-role-assignment-rg/main.bicep' = [
   for (roleAssignment, i) in roleAssignments: {
     name: '${deployment().name}-roleassignments-${i}'
     scope: dnsResourceGroup

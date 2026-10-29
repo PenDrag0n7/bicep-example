@@ -12,7 +12,7 @@ param namePrefix string
 // Virtual Networks
 // =========================
 
-module hubVirtualNetwork '../../../../resources/network/virtual-network/main.bicep' = {
+module hubVirtualNetwork '../../../res/network-virtual-network/main.bicep' = {
   name: '${deployment().name}-hub'
   params: {
     name: '${namePrefix}-vnet'
@@ -54,7 +54,7 @@ module hubVirtualNetwork '../../../../resources/network/virtual-network/main.bic
   }
 }
 
-module spokeVirtualNetwork '../../../../resources/network/virtual-network/main.bicep' = {
+module spokeVirtualNetwork '../../../res/network-virtual-network/main.bicep' = {
   name: '${deployment().name}-spoke'
   params: {
     name: '${namePrefix}-spoke-vnet'

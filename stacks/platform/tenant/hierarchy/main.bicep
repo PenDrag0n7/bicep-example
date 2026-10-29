@@ -18,7 +18,7 @@ param subscriptionHierarchy array
 @description('Required. Azure region to deploy the resources into. E.g. "australiaeast".')
 param location string
 
-module managementGroups '../../../../modules/patterns/tenant/subscription-hierarchy/main.bicep' = {
+module managementGroups '../../../../modules/ptn/tenant-hierarchy/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     subscriptionHierarchy: subscriptionHierarchy

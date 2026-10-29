@@ -43,7 +43,7 @@ param keyVaultRoleAssignments array = []
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -60,7 +60,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - PKI
 // =========================
 
-module pki '../../../../modules/patterns/security/pki/main.bicep' = {
+module pki '../../../../modules/ptn/security-pki/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     location: location

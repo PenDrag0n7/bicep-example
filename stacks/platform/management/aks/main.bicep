@@ -44,7 +44,7 @@ param keyVaultConfig object
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -61,7 +61,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - AKS Baseline
 // =========================
 
-module aks '../../../../modules/patterns/containers/aks-baseline/main.bicep' = {
+module aks '../../../../modules/ptn/container-aks/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     location: location

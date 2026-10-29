@@ -31,7 +31,7 @@ resource syslogResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Dependencies
 // =========================
 
-module virtualNetwork '../../../../resources/network/virtual-network/main.bicep' = {
+module virtualNetwork '../../../res/network-virtual-network/main.bicep' = {
   name: '${deployment().name}-vnet'
   scope: syslogResourceGroup
   params: {

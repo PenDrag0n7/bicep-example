@@ -48,7 +48,7 @@ param acrRoleAssignments array = []
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -65,7 +65,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Images
 // =============================
 
-module images '../../../../modules/patterns/compute/images/main.bicep' = {
+module images '../../../../modules/ptn/compute-image/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     location: location

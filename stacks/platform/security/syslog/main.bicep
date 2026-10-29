@@ -45,7 +45,7 @@ param diagnosticSettings object = {}
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -62,7 +62,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Syslog
 // =========================
 
-module syslog '../../../../modules/patterns/security/syslog/main.bicep' = {
+module syslog '../../../../modules/ptn/security-syslog/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     keyVaultExisting: {

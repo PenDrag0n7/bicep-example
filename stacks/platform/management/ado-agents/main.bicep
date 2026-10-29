@@ -37,7 +37,7 @@ param acgImageVersion string?
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -54,7 +54,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Azure DevOps Agents
 // =============================
 
-module images '../../../../modules/patterns/devops/agents/main.bicep' = {
+module images '../../../../modules/ptn/devops-agent/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     location: location

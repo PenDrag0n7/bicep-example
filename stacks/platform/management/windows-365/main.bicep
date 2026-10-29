@@ -29,7 +29,7 @@ param vnetExisting object
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -46,7 +46,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Win365 Cloud PC
 // =========================
 
-module win365CloudPc '../../../../modules/patterns/compute/windows-365/main.bicep' = {
+module win365CloudPc '../../../../modules/ptn/compute-windows-365/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     location: location

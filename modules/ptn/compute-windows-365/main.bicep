@@ -39,7 +39,7 @@ resource win365ResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // =========================
 
 // Resource Group
-module rgRbac '../../../resources/authorization/role-assignments/main.bicep' = {
+module rgRbac '../../res/authorization-role-assignment-rg/main.bicep' = {
   name: '${deployment().name}-rbac-rg'
   scope: win365ResourceGroup
   params: {
@@ -51,7 +51,7 @@ module rgRbac '../../../resources/authorization/role-assignments/main.bicep' = {
 }
 
 // Subscription
-module subRbac '../../../resources/authorization/role-assignment-subscription/main.bicep' = {
+module subRbac '../../res/authorization-role-assignment-sub/main.bicep' = {
   name: '${deployment().name}-rbac-subscription'
   params: {
     roleAssignment: {

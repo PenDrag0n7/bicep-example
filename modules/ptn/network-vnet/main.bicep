@@ -77,7 +77,7 @@ resource networkResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = 
 // Resource Group RBAC
 // =========================
 
-module rgRoleAssignments '../../../resources/authorization/role-assignments/main.bicep' = [for (roleAssignment, i) in roleAssignments: {
+module rgRoleAssignments '../../res/authorization-role-assignment-rg/main.bicep' = [for (roleAssignment, i) in roleAssignments: {
   name: '${deployment().name}-roleassignments-${i}'
   scope: networkResourceGroup
   params: {
@@ -136,7 +136,7 @@ module networkSecurityGroups 'br/public:avm/res/network/network-security-group:0
 // Virtual Network
 // =========================
 
-module virtualNetwork '../../../resources/network/virtual-network/main.bicep' = {
+module virtualNetwork '../../res/network-virtual-network/main.bicep' = {
   name: '${deployment().name}-vnet'
   scope: networkResourceGroup
   params: {

@@ -24,7 +24,7 @@ var common = loadYamlContent('../../../common.yaml')
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -41,7 +41,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Zone Bootstrap
 // =========================
 
-module bootstrap '../../../../modules/patterns/bootstrap/zone/main.bicep' = {
+module bootstrap '../../../../modules/ptn/bootstrap-subscription/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     tags: eslzConventions.outputs.tags

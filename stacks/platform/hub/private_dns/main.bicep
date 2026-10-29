@@ -37,7 +37,7 @@ param forwardingRules array = []
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -54,7 +54,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Private DNS
 // =========================
 
-module privateDns '../../../../modules/patterns/networking/private-dns/main.bicep' = {
+module privateDns '../../../../modules/ptn/network-private-dns/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     location: location

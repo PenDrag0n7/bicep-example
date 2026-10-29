@@ -55,7 +55,7 @@ param privateDnsZoneExisting object = {}
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -72,7 +72,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Firewalls
 // =========================
 
-module fortinet '../../../../modules/patterns/networking/fortinet/main.bicep' = {
+module fortinet '../../../../modules/ptn/network-fortinet/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     namePrefix: eslzConventions.outputs.namePrefix

@@ -55,7 +55,7 @@ param createNetworkWatcher bool
 // ESLZ Conventions
 // =========================
 
-module eslzConventions '../../../../modules/resources/helpers/conventions-subscription/main.bicep' = {
+module eslzConventions '../../../../modules/utl/naming/main.bicep' = {
   name: '${deployment().name}-convention'
   params: {
     tenant: common.tenant
@@ -72,7 +72,7 @@ module eslzConventions '../../../../modules/resources/helpers/conventions-subscr
 // Pattern - Networking
 // =========================
 
-module networking '../../../../modules/patterns/networking/vnet-baseline/main.bicep' = {
+module networking '../../../../modules/ptn/network-vnet/main.bicep' = {
   name: '${deployment().name}-pattern'
   params: {
     location: location
